@@ -51,6 +51,7 @@
 
 1. Edit `docker-compose.yml` and replace all the placeholder values that are
 contained within `< >`.  For example, modifying the placeholders for the Caddy service:
+<<<<<<< HEAD
 
     ```diff
           environment:
@@ -61,6 +62,8 @@ contained within `< >`.  For example, modifying the placeholders for the Caddy s
           ports:
             - target: 443
     ```
+=======
+>>>>>>> fefc691 (Clean up example text.)
 
     ```diff
           environment:
