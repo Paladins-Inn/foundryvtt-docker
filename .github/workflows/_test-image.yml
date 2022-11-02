@@ -14,6 +14,11 @@ on:
         required: true
         type: string
       # Optional inputs
+      data_artifact_path:
+        description: "The artifact path used to create the data archive"
+        default: data
+        required: false
+        type: string
       pip_cache_dir:
         description: "The pip cache directory"
         default: ~/.cache/pip
@@ -105,18 +110,18 @@ jobs:
           ${{ env.ARTIFACT_WORK_DIR }}/image.tar.7z | docker load
       - name: Set data directory permissions
         run: |
-          chmod a+rwx data
+          chmod a+rwx ${{ inputs.data_artifact_path }}
       - name: Run tests
         env:
           FOUNDRY_PASSWORD: ${{ secrets.foundry_password }}
           FOUNDRY_USERNAME: ${{ secrets.foundry_username }}
           PYTHONUNBUFFERED: 1
           RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: pytest | tee data/pytests.log
+        run: pytest | tee ${{ inputs.data_artifact_path }}/pytests.log
       - name: Compress and encrypt data directory
         if: ${{ always() }}
         run: |
-          tar cf - data | \
+          tar cf - ${{ inputs.data_artifact_path }} | \
           7za a -p${{ secrets.data_artifact_key }} -si data.tar.7z
       - name: Upload data artifacts
         if: ${{ always() }}
