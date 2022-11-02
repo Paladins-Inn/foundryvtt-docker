@@ -11,6 +11,9 @@ on:
         required: false
         type: string
     outputs:
+      go_version:
+        description: "The go version"
+        value: '1.19'
       image_name:
         description: "The Docker image name"
         value: felddy/foundryvtt
