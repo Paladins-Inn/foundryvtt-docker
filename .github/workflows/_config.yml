@@ -7,7 +7,7 @@ on:
     outputs:
       go_version:
         description: "The go version"
-        value: '1.16'
+        value: '1.19'
       image_name:
         description: "The Docker image name"
         value: felddy/foundryvtt
@@ -28,10 +28,10 @@ on:
         value: pre-installed-test-image
       python_version:
         description: "The Python version"
-        value: '3.9'
+        value: '3.10'
       shfmt_version:
         description: "The shfmt version"
-        value: v3.4.3
+        value: v3.5.1
 
 jobs:
   diagnostics:
