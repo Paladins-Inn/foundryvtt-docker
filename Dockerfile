@@ -51,14 +51,14 @@ RUN \
 
 FROM node:${NODE_IMAGE_VERSION} as final-stage
 
-ARG FOUNDRY_UID=421
+ARG FOUNDRY_UID=1001
 ARG FOUNDRY_VERSION
 ARG TARGETPLATFORM
 ARG VERSION
 
 LABEL com.foundryvtt.version=${FOUNDRY_VERSION}
-LABEL org.opencontainers.image.authors="markf+github@geekpad.com"
-LABEL org.opencontainers.image.vendor="Geekpad"
+LABEL org.opencontainers.image.authors="tech@paladins-inn.de"
+LABEL org.opencontainers.image.vendor="Paladins Inn"
 
 ENV FOUNDRY_HOME="/home/foundry"
 ENV FOUNDRY_VERSION=${FOUNDRY_VERSION}
@@ -75,26 +75,26 @@ COPY \
   src/launcher.sh \
   src/logging.sh \
   ./
-RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
-  && adduser --system --uid ${FOUNDRY_UID} --ingroup foundry foundry \
-  && apk --update --no-cache add \
+RUN apk --update --no-cache add \
   curl \
   jq \
   sed \
   su-exec \
   tzdata \
-  && npm install && echo ${VERSION} > image_version.txt
+  && npm install && echo ${VERSION} > image_version.txt \
+  && addgroup --system --gid ${FOUNDRY_UID} foundry \
+  && adduser --system --uid ${FOUNDRY_UID} --ingroup foundry foundry \
+  && chown foundry:foundry -R . 
 
 VOLUME ["/data"]
 # HTTP Server
 EXPOSE 30000/TCP
 # TURN Server
-# Not exposing TURN ports due to bug in Docker.
-# See: https://github.com/moby/moby/issues/11185
-# EXPOSE 33478/UDP
-# EXPOSE 49152-65535/UDP
+EXPOSE 33478/UDP
+EXPOSE 49152-65535/UDP
+
+USER 1001
 
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["resources/app/main.mjs", "--port=30000", "--headless", "--noupdate",\
   "--dataPath=/data"]
-HEALTHCHECK --start-period=3m --interval=30s --timeout=5s CMD ./check_health.sh

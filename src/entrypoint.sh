@@ -253,7 +253,9 @@ FOUNDRY_GID="${FOUNDRY_GID:-foundry}"
 find /data \
   -regex "${CONTAINER_PRESERVE_OWNER:-}" -prune -or \
   "(" -user "${FOUNDRY_UID}" -and -group "${FOUNDRY_GID}" ")" -or \
-  -exec chown "${FOUNDRY_UID}:${FOUNDRY_GID}" {} +
+  -exec ls -lda {} +
+#  -exec chown "${FOUNDRY_UID}:${FOUNDRY_GID}" {} +
+
 log_debug "Completed setting directory permissions."
 
 if [ "$1" = "--root-shell" ]; then
@@ -270,7 +272,8 @@ export CONTAINER_PRESERVE_CONFIG FOUNDRY_ADMIN_KEY FOUNDRY_AWS_CONFIG \
   FOUNDRY_PROTOCOL FOUNDRY_PROXY_PORT FOUNDRY_PROXY_SSL FOUNDRY_ROUTE_PREFIX \
   FOUNDRY_SSL_CERT FOUNDRY_SSL_KEY FOUNDRY_UPNP FOUNDRY_UPNP_LEASE_DURATION \
   FOUNDRY_WORLD
-su-exec "${FOUNDRY_UID}:${FOUNDRY_GID}" ./launcher.sh "$@" \
+#su-exec "${FOUNDRY_UID}:${FOUNDRY_GID}" ./launcher.sh "$@" \
+./launcher.sh "$@" \
   || log_error "Launcher exited with error code: $?"
 
 # If the container requested a new S3 URL but disabled the cache
